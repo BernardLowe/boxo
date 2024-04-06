@@ -27,14 +27,6 @@ func NewHandler(gwAPI gateway.IPFSBackend) http.Handler {
 		// Responses on localhost, or DNSLink and Subdomain Gateways.
 		PublicGateways: map[string]*gateway.PublicGateway{
 			// Support public requests with Host: CID.ipfs.example.net and ID.ipns.example.net
-			"example.net": {
-				Paths:         []string{"/ipfs", "/ipns"},
-				NoDNSLink:     false,
-				UseSubdomains: true,
-				// This subdomain gateway is used for testing and therefore we make non-trustless requests.
-				DeserializedResponses: true,
-			},
-			// Support local requests
 			"localhost": {
 				Paths:         []string{"/ipfs", "/ipns"},
 				NoDNSLink:     false,

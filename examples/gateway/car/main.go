@@ -21,7 +21,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	carFilePtr := flag.String("c", "", "path to CAR file to back this gateway from")
+	carFilePtr := flag.String("c", "./test.car", "path to CAR file to back this gateway from")
 	port := flag.Int("p", 8040, "port to run this gateway from")
 	flag.Parse()
 

@@ -1,0 +1,16 @@
+=============== Apr 6, 2024 (CST) ===============
+19:30:19.564414 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+19:30:19.624546 db@open opening
+19:30:19.628490 version@stat F·[] S·0B[] Sc·[]
+19:30:19.678828 db@janitor F·2 G·0
+19:30:19.678921 db@open done T·54.293842ms
+=============== Apr 6, 2024 (CST) ===============
+19:33:34.046712 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+19:33:34.047941 version@stat F·[] S·0B[] Sc·[]
+19:33:34.047973 db@open opening
+19:33:34.048059 journal@recovery F·1
+19:33:34.048279 journal@recovery recovering @1
+19:33:34.078426 memdb@flush created L0@2 N·1 S·191B "/bl..PUA,v1":"/bl..PUA,v1"
+19:33:34.078877 version@stat F·[1] S·191B[191B] Sc·[0.25]
+19:33:34.146617 db@janitor F·3 G·0
+19:33:34.146663 db@open done T·98.671395ms

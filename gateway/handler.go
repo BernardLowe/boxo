@@ -220,6 +220,8 @@ func (i *handler) getOrHeadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("content-path: ", contentPath)
+
 	ctx := context.WithValue(r.Context(), ContentPathKey, contentPath)
 	r = r.WithContext(ctx)
 
