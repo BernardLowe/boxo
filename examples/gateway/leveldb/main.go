@@ -51,12 +51,12 @@ func main() {
 	}
 
 	upload := func(resp http.ResponseWriter, req *http.Request) {
-
-		if req.Method != http.MethodPost {
-			resp.WriteHeader(http.StatusMethodNotAllowed)
-			resp.Write([]byte("Method not allowed"))
-			return
-		}
+		resp.Header().Set("Access-Control-Allow-Origin", "*")
+		//if req.Method != http.MethodPost {
+		//	resp.WriteHeader(http.StatusMethodNotAllowed)
+		//	resp.Write([]byte("Method not allowed"))
+		//	return
+		//}
 
 		body, err := io.ReadAll(req.Body)
 		fmt.Println("upload", string(body))
