@@ -4,9 +4,6 @@ import (
 	"net/http"
 
 	"github.com/ipfs/boxo/gateway"
-	"github.com/ipfs/boxo/gateway/assets"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
@@ -27,7 +24,7 @@ func NewHandler(gwAPI gateway.IPFSBackend) http.Handler {
 		// Responses on localhost, or DNSLink and Subdomain Gateways.
 		PublicGateways: map[string]*gateway.PublicGateway{
 			// Support public requests with Host: CID.ipfs.example.net and ID.ipns.example.net
-			"localhost": {
+			"deweb.world": {
 				Paths:         []string{"/ipfs", "/ipns"},
 				NoDNSLink:     false,
 				UseSubdomains: true,
@@ -37,13 +34,13 @@ func NewHandler(gwAPI gateway.IPFSBackend) http.Handler {
 			},
 		},
 
-		// Add an example menu item called 'Boxo', linking to our library.
-		Menu: []assets.MenuItem{
-			{
-				URL:   "https://github.com/ipfs/boxo",
-				Title: "Boxo",
-			},
-		},
+		//// Add an example menu item called 'Boxo', linking to our library.
+		//Menu: []assets.MenuItem{
+		//	{
+		//		URL:   "https://github.com/ipfs/boxo",
+		//		Title: "Boxo",
+		//	},
+		//},
 	}
 
 	// Creates a mux to serve the gateway paths. This is not strictly necessary
@@ -57,7 +54,7 @@ func NewHandler(gwAPI gateway.IPFSBackend) http.Handler {
 	// Serves prometheus metrics alongside the gateway. This step is optional and
 	// only required if you need or want to access the metrics. You may also decide
 	// to expose the metrics on a different path, or port.
-	mux.Handle("/debug/metrics/prometheus", promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{}))
+	//mux.Handle("/debug/metrics/prometheus", promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{}))
 
 	// Then wrap the mux with the hostname handler. Please note that the metrics
 	// will not be available under the previously defined publicGateways.

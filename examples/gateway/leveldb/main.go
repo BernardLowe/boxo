@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"github.com/ipfs/boxo/blockstore"
 	exchange "github.com/ipfs/boxo/exchange"
 	"github.com/ipfs/boxo/exchange/offline"
@@ -52,14 +51,8 @@ func main() {
 
 	upload := func(resp http.ResponseWriter, req *http.Request) {
 		resp.Header().Set("Access-Control-Allow-Origin", "*")
-		//if req.Method != http.MethodPost {
-		//	resp.WriteHeader(http.StatusMethodNotAllowed)
-		//	resp.Write([]byte("Method not allowed"))
-		//	return
-		//}
 
 		body, err := io.ReadAll(req.Body)
-		fmt.Println("upload", string(body))
 		if err != nil {
 			resp.WriteHeader(http.StatusInternalServerError)
 			resp.Write([]byte(err.Error()))
