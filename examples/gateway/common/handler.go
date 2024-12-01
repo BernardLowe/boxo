@@ -33,7 +33,7 @@ func NewHandler(gwAPI gateway.IPFSBackend, bs blockservice.BlockService) http.Ha
 			"deweb.world": {
 				Paths:         []string{"/ipfs", "/ipns"},
 				NoDNSLink:     false,
-				UseSubdomains: true,
+				UseSubdomains: false,
 				// Localhost is considered trusted, ok to allow deserialized responses
 				// as long it is not exposed to the internet.
 				DeserializedResponses: true,
