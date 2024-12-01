@@ -7,10 +7,7 @@ import (
 	exchange "github.com/ipfs/boxo/exchange"
 	"github.com/ipfs/boxo/exchange/offline"
 	"github.com/ipfs/boxo/filestore"
-	blocks "github.com/ipfs/go-block-format"
-	"github.com/ipfs/go-cid"
 	leveldb "github.com/ipfs/go-ds-leveldb"
-	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -27,7 +24,7 @@ func main() {
 	defer cancel()
 
 	port := flag.Int("p", 8040, "port to run this gateway from")
-	uploadPort := flag.Int("uploadP", 8041, "port to run this gateway from")
+	//uploadPort := flag.Int("uploadP", 8041, "port to run this gateway from")
 	flag.Parse()
 
 	// Setups up tracing. This is optional and only required if the implementer
@@ -49,36 +46,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	upload := func(resp http.ResponseWriter, req *http.Request) {
-		resp.Header().Set("Access-Control-Allow-Origin", "*")
-
-		body, err := io.ReadAll(req.Body)
-		if err != nil {
-			resp.WriteHeader(http.StatusInternalServerError)
-			resp.Write([]byte(err.Error()))
-		}
-		block := blocks.NewBlock(body)
-		cidv1 := cid.NewCidV1(cid.Raw, block.Cid().Hash())
-		block, _ = blocks.NewBlockWithCid(body, cidv1)
-		blockService.AddBlock(context.Background(), block)
-		resp.WriteHeader(http.StatusOK)
-
-		resp.Write([]byte(cidv1.String()))
-	}
-
-	mux := http.NewServeMux()
-	mux.HandleFunc("/upload", upload)
+	//mux := http.NewServeMux()
 	//handler := common.NewUploadHandler(backend, upload)
-	handler := common.NewHandler(backend)
+	handler := common.NewHandler(backend, blockService)
 
 	log.Printf("Listening on http://localhost:%d", *port)
 	log.Printf("Metrics available at http://127.0.0.1:%d/debug/metrics/prometheus", *port)
 
-	go func() {
-		if err := http.ListenAndServe(":"+strconv.Itoa(*uploadPort), mux); err != nil {
-			log.Fatal(err)
-		}
-	}()
+	//go func() {
+	//	if err := http.ListenAndServe(":"+strconv.Itoa(*uploadPort), mux); err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}()
 
 	if err := http.ListenAndServe(":"+strconv.Itoa(*port), handler); err != nil {
 		log.Fatal(err)

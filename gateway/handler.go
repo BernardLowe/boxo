@@ -32,7 +32,8 @@ import (
 var log = logging.Logger("boxo/gateway")
 
 const (
-	ipfsPathPrefix        = "/ipfs/"
+	//ipfsPathPrefix        = "/ipfs/"
+	ipfsPathPrefix        = "/matrix/"
 	ipnsPathPrefix        = ipns.NamespacePrefix
 	immutableCacheControl = "public, max-age=29030400, immutable"
 )
@@ -214,13 +215,14 @@ func (i *handler) getOrHeadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var success bool
-	contentPath, err := path.NewPath(r.URL.Path)
+	rp := strings.TrimPrefix(r.URL.Path, "/matrix")
+	rp = "/ipfs" + rp
+	//contentPath, err := path.NewPath(r.URL.Path)
+	contentPath, err := path.NewPath(rp)
 	if err != nil {
 		i.webError(w, r, err, http.StatusBadRequest)
 		return
 	}
-
-	fmt.Println("content-path: ", contentPath)
 
 	ctx := context.WithValue(r.Context(), ContentPathKey, contentPath)
 	r = r.WithContext(ctx)
@@ -785,7 +787,7 @@ func handleProtocolHandlerRedirect(w http.ResponseWriter, r *http.Request, c *Co
 			webError(w, r, c, fmt.Errorf("failed to parse uri query parameter: %w", err), http.StatusBadRequest)
 			return true
 		}
-		if u.Scheme != "ipfs" && u.Scheme != "ipns" {
+		if u.Scheme != "ipfs" && u.Scheme != "ipns" && u.Scheme != "matrix" {
 			webError(w, r, c, fmt.Errorf("uri query parameter scheme must be ipfs or ipns: %w", err), http.StatusBadRequest)
 			return true
 		}
@@ -806,12 +808,13 @@ func handleProtocolHandlerRedirect(w http.ResponseWriter, r *http.Request, c *Co
 // https://github.com/ipfs/kubo/issues/4025
 func (i *handler) handleServiceWorkerRegistration(w http.ResponseWriter, r *http.Request) bool {
 	if r.Header.Get("Service-Worker") == "script" {
-		matched, _ := regexp.MatchString(`^/ip[fn]s/[^/]+$`, r.URL.Path)
-		if matched {
-			err := errors.New("navigator.serviceWorker: registration is not allowed for this scope")
-			i.webError(w, r, err, http.StatusBadRequest)
-			return true
-		}
+		// TODO
+		//matched, _ := regexp.MatchString(`^/ip[fn]s/[^/]+$`, r.URL.Path)
+		//if matched {
+		//	err := errors.New("navigator.serviceWorker: registration is not allowed for this scope")
+		//	i.webError(w, r, err, http.StatusBadRequest)
+		//	return true
+		//}
 	}
 
 	return false
@@ -872,7 +875,8 @@ func (i *handler) handleSuperfluousNamespace(w http.ResponseWriter, r *http.Requ
 	}
 
 	// Attempt to fix the superflous namespace
-	intendedPath, err := path.NewPath(strings.TrimPrefix(r.URL.Path, "/ipfs"))
+	// TODO
+	intendedPath, err := path.NewPath(strings.TrimPrefix(strings.TrimPrefix(r.URL.Path, "/ipfs"), "/matrix"))
 	if err != nil {
 		i.webError(w, r, fmt.Errorf("invalid ipfs path: %w", err), http.StatusBadRequest)
 		return true

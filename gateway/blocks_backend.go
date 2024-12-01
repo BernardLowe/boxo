@@ -593,6 +593,7 @@ func (bb *BlocksBackend) getPathRoots(ctx context.Context, contentPath path.Immu
 		Note that while the top one will change every time any article is changed,
 		the last root (responsible for specific article) may not change at all.
 	*/
+	// TODO 解析
 	var sp strings.Builder
 	var pathRoots []cid.Cid
 	contentPathStr := contentPath.String()

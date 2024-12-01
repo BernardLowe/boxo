@@ -1,13 +1,19 @@
 package common
 
 import (
+	"context"
+	"fmt"
+	"github.com/ipfs/boxo/blockservice"
+	blocks "github.com/ipfs/go-block-format"
+	"github.com/ipfs/go-cid"
+	"io"
 	"net/http"
 
 	"github.com/ipfs/boxo/gateway"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
-func NewHandler(gwAPI gateway.IPFSBackend) http.Handler {
+func NewHandler(gwAPI gateway.IPFSBackend, bs blockservice.BlockService) http.Handler {
 	conf := gateway.Config{
 		// If you set DNSLink to point at the CID from CAR, you can load it!
 		NoDNSLink: false,
@@ -48,8 +54,27 @@ func NewHandler(gwAPI gateway.IPFSBackend) http.Handler {
 	// to add prometheus metrics, hence needing the mux.
 	gwHandler := gateway.NewHandler(conf, gwAPI)
 	mux := http.NewServeMux()
-	mux.Handle("/ipfs/", gwHandler)
-	mux.Handle("/ipns/", gwHandler)
+	mux.Handle("/matrix/", gwHandler)
+	//mux.Handle("/ipfs/", gwHandler)
+	//mux.Handle("/ipns/", gwHandler)
+
+	mux.HandleFunc("/upload", func(resp http.ResponseWriter, req *http.Request) {
+		resp.Header().Set("Access-Control-Allow-Origin", "*")
+
+		body, err := io.ReadAll(req.Body)
+		if err != nil {
+			resp.WriteHeader(http.StatusInternalServerError)
+			resp.Write([]byte(err.Error()))
+		}
+		block := blocks.NewBlock(body)
+		cidv1 := cid.NewCidV1(cid.Raw, block.Cid().Hash())
+		block, _ = blocks.NewBlockWithCid(body, cidv1)
+		bs.AddBlock(context.Background(), block)
+		resp.WriteHeader(http.StatusOK)
+
+		fmt.Println(cidv1)
+		resp.Write([]byte(cidv1.String()))
+	})
 
 	// Serves prometheus metrics alongside the gateway. This step is optional and
 	// only required if you need or want to access the metrics. You may also decide

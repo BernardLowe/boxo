@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	IPFSNamespace = "ipfs"
-	IPNSNamespace = "ipns"
-	IPLDNamespace = "ipld"
+	IPFSNamespace   = "ipfs"
+	IPNSNamespace   = "ipns"
+	IPLDNamespace   = "ipld"
+	MATRIXNamespace = "matrix"
 )
 
 // Path is a generic, valid, and well-formed path. A valid path is shaped as follows:
@@ -147,7 +148,7 @@ func NewPath(str string) (Path, error) {
 	}
 
 	switch segments[0] {
-	case IPFSNamespace, IPLDNamespace:
+	case IPFSNamespace, IPLDNamespace, MATRIXNamespace:
 		cid, err := cid.Decode(segments[1])
 		if err != nil {
 			return nil, &ErrInvalidPath{err: err, path: str}
